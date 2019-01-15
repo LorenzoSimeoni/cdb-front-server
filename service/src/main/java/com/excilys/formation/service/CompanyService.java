@@ -22,12 +22,16 @@ public class CompanyService {
 	/**
 	 * Fill a list with all the Company object found in the List<Company> gived by our companyDao
 	 */
-	public List<Company> show() {
+	public List<Company> showAll() {
 		return companyDao.getList();
 	}
 	
 	public Optional<Company> showDetailsById(long id) {
 		return companyDao.getDetailsById(id);
+	}
+	
+	public Optional<Company> showDetailsByName(String name) {
+		return companyDao.getDetailsByName(name);
 	}
 	
 	public List<Company> showPage(Page page) {
@@ -36,5 +40,13 @@ public class CompanyService {
 	
 	public int delete(long id) {
 		return companyDao.delete(id);
+	}
+	
+	public Company update(Company company) {
+		return companyDao.update(company);
+	}
+	
+	public long create(Company company) {
+		return companyDao.create(company);
 	}
 }

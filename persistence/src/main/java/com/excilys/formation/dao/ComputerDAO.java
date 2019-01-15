@@ -194,9 +194,11 @@ public class ComputerDAO {
 	public long create(Computer computer) {
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
+		long numberOfComputerCreated = 0;
 		try {
 			session.save(computer);
-			transaction.commit();			
+			transaction.commit();
+			numberOfComputerCreated = 1;
 		} catch (Exception e) {
 			LOGGER.info("ERROR CREATING COMPUTER",e);
 			transaction.rollback();
@@ -204,6 +206,6 @@ public class ComputerDAO {
 		} finally {
 			session.close();			
 		}
-		return 1;
+		return numberOfComputerCreated;
 	}
 }

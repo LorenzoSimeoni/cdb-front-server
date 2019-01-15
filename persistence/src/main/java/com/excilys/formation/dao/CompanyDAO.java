@@ -3,6 +3,8 @@ package com.excilys.formation.dao;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.NoResultException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -25,8 +27,11 @@ public class CompanyDAO {
 	private final static Logger LOGGER = LogManager.getLogger(CompanyDAO.class.getName());
 	private static final String LISTCOMPANY = "FROM Company";
 	private static final String LISTCOMPANYDETAILSBYID = "FROM Company WHERE id = :id";
+	private static final String LISTCOMPANYDETAILSBYNAME = "FROM Company WHERE name = :name";
 	private static final String DELETEACOMPANY = "DELETE FROM Company WHERE id = :id";
 	private static final String DELETECOMPUTERS = "DELETE FROM Computer WHERE company_id = :id";
+	private static final String UPDATECOMPANY = "UPDATE Company SET name = :name WHERE id = :id";
+
     
 	private SessionFactory sessionFactory;
 	
@@ -52,14 +57,31 @@ public class CompanyDAO {
 	}
 	
 	public Optional<Company> getDetailsById(long id) {
-		Session session = sessionFactory.openSession();
-		Company company = session.createQuery(LISTCOMPANYDETAILSBYID,Company.class)
-				.setParameter("id", id)
-				.getSingleResult();
-		session.close();
+		Company company = null;
+		try(Session session = sessionFactory.openSession();) {
+			company = session.createQuery(LISTCOMPANYDETAILSBYID,Company.class)
+					.setParameter("id", id)
+					.getSingleResult();
+			session.close();
+		} catch (NoResultException e) {
+			LOGGER.info("No Company Found");
+		}
+		
 		return Optional.ofNullable(company);
 	}
-
+	
+	public Optional<Company> getDetailsByName(String name) {
+		Company company = null;
+		try(Session session = sessionFactory.openSession();) {
+			 company = session.createQuery(LISTCOMPANYDETAILSBYNAME,Company.class)
+					.setParameter("name", name)
+					.getSingleResult();
+			session.close();			
+		} catch (NoResultException e) {
+			LOGGER.info("No Company Found");
+		}
+		return Optional.ofNullable(company);
+	}
 
 	public List<Company> getListPage(Page page) {
 		Session session = sessionFactory.openSession();
@@ -93,5 +115,42 @@ public class CompanyDAO {
 			session.close();
 		}
 		return numberOfDeletedElement;
+	}
+
+	public Company update(Company company) {
+		int numberOfUpdatedElement = 0;
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+		try {
+			numberOfUpdatedElement = session.createQuery(UPDATECOMPANY)
+					.setParameter("id", company.getId())
+					.setParameter("name", company.getName())
+					.executeUpdate();				
+			LOGGER.info(numberOfUpdatedElement + " elements with ID : " + company.getId() + " are now updated");
+			transaction.commit();			
+		} catch (Exception e) {
+			LOGGER.info("ERROR UPDATING COMPANY",e);
+			transaction.rollback();
+		} finally {
+			session.close();			
+		}
+		return company;
+	}
+
+	public long create(Company company) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+		long numberOfCompanyCreated = 0;
+		try {
+			session.save(company);
+			transaction.commit();
+			numberOfCompanyCreated=1;
+		} catch (Exception e) {
+			LOGGER.info("ERROR CREATING COMPANY",e);
+			transaction.rollback();
+		} finally {
+			session.close();			
+		}
+		return numberOfCompanyCreated;
 	}
 }

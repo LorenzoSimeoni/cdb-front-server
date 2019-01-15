@@ -28,13 +28,13 @@ public class ValidatorComputer {
 	}
 	
 	public void checkComputer(Computer computer) throws NotPermittedComputerException {
-		if (nameIsNull(computer)) {
+		if(nameIsNull(computer)) {
 			throw new NameComputerException();
 		}
-		if (!companyExist(computer.getCompany())) {
+		if(!companyExist(computer.getCompany())) {
 			throw new CompanyIDException();
 		}
-		if (discontinuedNotNullWhileIntroducedIs(computer)) {
+		if(discontinuedNotNullWhileIntroducedIs(computer)) {
 			throw new DateDiscontinuedWithoutIntroduced();
 		}
 		if(discontinuedNotAfterIntroduced(computer)) {
@@ -43,21 +43,21 @@ public class ValidatorComputer {
 	}
 	
 	private boolean nameIsNull(Computer computer) {
-		if (computer.getName() == null) {
+		if(computer.getName() == null) {
 			return true;			
 		}
 		return false;
 	}
 	
 	private boolean discontinuedNotNullWhileIntroducedIs(Computer computer) {
-		if (computer.getDiscontinued() != null && computer.getIntroduced() == null) {
+		if(computer.getDiscontinued() != null && computer.getIntroduced() == null) {
 			return true;
 		}
 		return false;
 	}
 	
 	private boolean discontinuedNotAfterIntroduced(Computer computer) {
-		if (computer.getIntroduced() != null && computer.getDiscontinued() != null) {
+		if(computer.getIntroduced() != null && computer.getDiscontinued() != null) {
 			if (!computer.getDiscontinued().isBefore(computer.getIntroduced())) {
 				return true;
 			}

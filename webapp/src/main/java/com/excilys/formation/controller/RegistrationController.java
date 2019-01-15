@@ -20,7 +20,7 @@ import com.excilys.formation.validator.ValidatorUser;
 @RestController
 @RequestMapping(value = "/registration")
 public class RegistrationController {
-	private final static Logger LOGGER = LogManager.getLogger(IndexController.class.getName());
+	private final static Logger LOGGER = LogManager.getLogger(RegistrationController.class.getName());
 
 	private MapperUser mapperUser;
 	private ValidatorUser validatorUser;
