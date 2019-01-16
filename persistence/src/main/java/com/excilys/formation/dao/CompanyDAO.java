@@ -117,7 +117,7 @@ public class CompanyDAO {
 		return numberOfDeletedElement;
 	}
 
-	public Company update(Company company) {
+	public long update(Company company) {
 		int numberOfUpdatedElement = 0;
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
@@ -134,7 +134,7 @@ public class CompanyDAO {
 		} finally {
 			session.close();			
 		}
-		return company;
+		return numberOfUpdatedElement;
 	}
 
 	public long create(Company company) {

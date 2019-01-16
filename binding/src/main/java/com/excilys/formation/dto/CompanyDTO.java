@@ -1,8 +1,17 @@
 package com.excilys.formation.dto;
 
+import com.excilys.formation.model.Company;
+
 public class CompanyDTO {
 	private long id;
 	private String name;
+	
+	public CompanyDTO() {}
+	
+	public CompanyDTO(Company company) {
+		this.id = company.getId();
+		this.name = company.getName();
+	}
 	
 	public long getId() {
 		return id;

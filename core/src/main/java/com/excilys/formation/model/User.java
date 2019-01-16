@@ -15,11 +15,11 @@ public class User {
 	
 	public User() {}
 	
-	public User(long id, String name, String mdp, Role role) {
+	public User(long id, String name, String password, Role role) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.mdp = mdp;
+		this.password = password;
 		this.role = role;
 	}
 
@@ -32,7 +32,7 @@ public class User {
 	private String name;
 	
 	@Column(name="passwordHash")
-	private String mdp;
+	private String password;
 	
 	@ManyToOne
 	@JoinColumn(name="role_id")
@@ -55,11 +55,11 @@ public class User {
 	}
 
 	public String getPassword() {
-		return mdp;
+		return password;
 	}
 
-	public void setPassword(String mdp) {
-		this.mdp = mdp;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Role getRole() {

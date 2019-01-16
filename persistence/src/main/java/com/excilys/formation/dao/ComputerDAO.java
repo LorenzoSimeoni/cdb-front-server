@@ -163,7 +163,7 @@ public class ComputerDAO {
 	 * @param computer contains the new configuration of computer
 	 * @param id       the ID of the computer we want to change
 	 */
-	public Computer update(Computer computer) {
+	public long update(Computer computer) {
 		int numberOfUpdatedElement = 0;
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
@@ -183,7 +183,7 @@ public class ComputerDAO {
 		} finally {
 			session.close();			
 		}
-		return computer;
+		return numberOfUpdatedElement;
 	}
 
 	/**

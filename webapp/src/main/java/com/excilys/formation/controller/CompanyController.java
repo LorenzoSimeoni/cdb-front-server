@@ -2,11 +2,13 @@ package com.excilys.formation.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.excilys.formation.dto.CompanyDTO;
-import com.excilys.formation.exception.IdException;
+import com.excilys.formation.exception.IdCompanyException;
 import com.excilys.formation.exception.NotPermittedCompanyException;
 import com.excilys.formation.exception.WebExceptions;
 import com.excilys.formation.mapper.MapperCompany;
@@ -45,50 +47,60 @@ public class CompanyController {
 	
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<Company> findAllComputers() {
-		return companyService.showAll();
+	public List<CompanyDTO> findAllComputers() {
+		return companyService.showAll().stream()
+			.map(company -> new CompanyDTO(company))
+			.collect(Collectors.toList());
 	}
 	
 	@GetMapping(value= "/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public Company findOneCompany(@PathVariable("id") Long id) throws WebExceptions {
+	public CompanyDTO findOneCompany(@PathVariable("id") Long id) throws WebExceptions {
 		Optional<Company> companyOpt = companyService.showDetailsById(id);
 		if(companyOpt.isPresent()) {
-			return companyOpt.get();
+			return new CompanyDTO(companyOpt.get());  
 		}
-		throw new IdException();
+		throw new IdCompanyException();
 	}
 	
 	@DeleteMapping(value="/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void delete(@PathVariable("id") long id) {
-		companyService.delete(id);
+	public int delete(@PathVariable("id") long id) throws WebExceptions {
+		int nbOfCompanyDeleted = companyService.delete(id);
+		if(nbOfCompanyDeleted>0) {
+			return nbOfCompanyDeleted;
+		}
+		throw new IdCompanyException();
 	}
 	
 	@PostMapping("/create")
 	@ResponseStatus(HttpStatus.CREATED)
-	public long create(@RequestBody CompanyDTO companyDTO) {
+	public ResponseEntity<String> create(@RequestBody CompanyDTO companyDTO) {
 		Company company = mapperCompany.mapper(companyDTO);
 		long nbOfCompanyCreated = 0;
 		try {
 			validatorCompany.checkCompany(company);
 			nbOfCompanyCreated = companyService.create(company);
 		} catch (NotPermittedCompanyException e) {
-			LOGGER.info(" COMPANY NOT CREATED "+e.getErrorMsg());
+			LOGGER.info("COMPANY NOT CREATED "+e.getErrorMsg());
+			return new ResponseEntity<String>("COMPANY NOT CREATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
 		}
-		return nbOfCompanyCreated;
+		return new ResponseEntity<String>(nbOfCompanyCreated+" Company created", HttpStatus.CREATED);
 	}
 	
 	@PutMapping(value="/update/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void update(@PathVariable long id,@RequestBody CompanyDTO companyDTO) {
+	public ResponseEntity<String> update(@PathVariable long id,@RequestBody CompanyDTO companyDTO) {
 		companyDTO.setId(id);
+		long nbOfCompanyUpdated = 0;
 		Company company = mapperCompany.mapper(companyDTO);
 		try {
 			validatorCompany.checkCompany(company);
-			companyService.update(company);
+			nbOfCompanyUpdated = companyService.update(company);
 		} catch (NotPermittedCompanyException e) {
-			LOGGER.info(" COMPUTER NOT UPDATED "+e.getErrorMsg());
+			LOGGER.info("COMPUTER NOT UPDATED "+e.getErrorMsg());
+			return new ResponseEntity<String>("COMPANY NOT UPDATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
 		}
+		return new ResponseEntity<String>(nbOfCompanyUpdated+" Company updated", HttpStatus.CREATED);
 	}
 }

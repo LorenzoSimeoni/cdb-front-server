@@ -22,7 +22,7 @@ public class ComputerService {
 		this.computerDao = computerDao;
 	}
 	
-	public List<Computer> showComputer() {
+	public List<Computer> showAll() {
 		return computerDao.getList();
 	}
 	
@@ -54,8 +54,8 @@ public class ComputerService {
 		return computerDao.create(computer);
 	}
 	
-	public void updateComputer(Computer computer) {
-		computerDao.update(computer);
+	public long updateComputer(Computer computer) {
+		return computerDao.update(computer);
 	}
 	
 	public long countComputer() {

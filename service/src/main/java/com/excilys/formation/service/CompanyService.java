@@ -42,7 +42,7 @@ public class CompanyService {
 		return companyDao.delete(id);
 	}
 	
-	public Company update(Company company) {
+	public long update(Company company) {
 		return companyDao.update(company);
 	}
 	
