@@ -58,8 +58,8 @@ public class WebAppConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.cors().configurationSource(corsConfigurationSource()).and()
-		.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+		.csrf().disable() //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+		.cors().configurationSource(corsConfigurationSource())
 		.and()
 		.authorizeRequests()
 			.antMatchers(HttpMethod.GET,"/").permitAll()

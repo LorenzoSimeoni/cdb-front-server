@@ -83,9 +83,9 @@ public class CompanyController {
 			nbOfCompanyCreated = companyService.create(company);
 		} catch (NotPermittedCompanyException e) {
 			LOGGER.info("COMPANY NOT CREATED "+e.getErrorMsg());
-			return new ResponseEntity<String>("COMPANY NOT CREATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("{\"error\": \"COMPANY NOT CREATED "+e.getErrorMsg() +"\"}", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(nbOfCompanyCreated+" Company created", HttpStatus.CREATED);
+		return new ResponseEntity<String>("{\"error\": \" "+nbOfCompanyCreated+" Company created \"}", HttpStatus.CREATED);
 	}
 	
 	@PutMapping(value="/update/{id}")
@@ -99,8 +99,8 @@ public class CompanyController {
 			nbOfCompanyUpdated = companyService.update(company);
 		} catch (NotPermittedCompanyException e) {
 			LOGGER.info("COMPUTER NOT UPDATED "+e.getErrorMsg());
-			return new ResponseEntity<String>("COMPANY NOT UPDATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("{\"error\": \"COMPANY NOT UPDATED "+e.getErrorMsg() +"\"}", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(nbOfCompanyUpdated+" Company updated", HttpStatus.CREATED);
+		return new ResponseEntity<String>("{\"error\": \" "+nbOfCompanyUpdated+" Company updated \"}", HttpStatus.CREATED);
 	}
 }
