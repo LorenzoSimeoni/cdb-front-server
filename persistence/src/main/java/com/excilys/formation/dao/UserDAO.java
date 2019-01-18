@@ -18,8 +18,8 @@ import com.excilys.formation.model.User;
 public class UserDAO {
 	private final static Logger LOGGER = LogManager.getLogger(UserDAO.class.getName());
 
-	private static final String FINDUSER = "FROM User WHERE name = :name AND password = :password";
-	private static final String FINDUSERBYUSERNAME = "FROM User WHERE name = :name";
+	private static final String FINDUSER = "FROM User WHERE username = :name AND password = :password";
+	private static final String FINDUSERBYUSERNAME = "FROM User WHERE username = :name";
 	
 	private SessionFactory sessionFactory;
 	
