@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.dao.CompanyDAO;
+import com.excilys.formation.dao.OrderByCompany;
+import com.excilys.formation.dao.OrderByMode;
 import com.excilys.formation.model.Company;
 import com.excilys.formation.model.Page;
 
@@ -36,6 +38,14 @@ public class CompanyService {
 	
 	public List<Company> showPage(Page page) {
 		return companyDao.getListPage(page);
+	}
+
+	public List<Company> getCompaniesOrderByLike(OrderByCompany column, OrderByMode mode, String name, Page page) {
+		return companyDao.getCompanyOrderByLike(column, mode, name,page);
+	}
+
+	public List<Company> getCompaniesOrderBy(OrderByCompany column, OrderByMode mode, Page page) {
+		return companyDao.getCompanyOrderBy(column, mode, page);
 	}
 	
 	public int delete(long id) {
