@@ -68,7 +68,7 @@ public class WebAppConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.PUT, "/Computer/update/**", "/Company/update/**").permitAll() //hasRole("ADMIN")
 			.antMatchers(HttpMethod.DELETE, "/Computer/**", "/Company/**").permitAll() //hasRole("ADMIN")
 			.antMatchers(HttpMethod.GET, "/Company/**").permitAll()  // hasRole("ADMIN")
-		.anyRequest().authenticated()
+		.anyRequest().permitAll()
 		.and()
 		.formLogin()
 		.and()
