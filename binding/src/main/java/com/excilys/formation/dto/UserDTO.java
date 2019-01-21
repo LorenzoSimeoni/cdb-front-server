@@ -6,7 +6,7 @@ public class UserDTO {
 	
 	private long id;
 	@NotBlank
-	private String name;
+	private String username;
 	@NotBlank
 	private String password;
 	@NotBlank
@@ -20,12 +20,7 @@ public class UserDTO {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -43,6 +38,12 @@ public class UserDTO {
 	}
 	public void setRoleId(String roleId) {
 		this.roleId = roleId;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }

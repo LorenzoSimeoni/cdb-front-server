@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,7 @@ public class RegistrationController {
 	private MapperUser mapperUser;
 	private ValidatorUser validatorUser;
 	private UserService userService;
+
 	
 	@Autowired
 	public RegistrationController(MapperUser mapperUser, ValidatorUser validatorUser, UserService userService) {
@@ -37,7 +40,10 @@ public class RegistrationController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public long registration(@RequestBody UserDTO userDTO) {
 		User user = mapperUser.mapper(userDTO);
+		System.out.println(user.toString());
 		long nbOfUserCreated = 0;
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		try {
 			validatorUser.checkUser(user);
 			nbOfUserCreated = userService.create(user);
