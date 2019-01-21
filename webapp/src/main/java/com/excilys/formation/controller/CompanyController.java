@@ -50,11 +50,11 @@ public class CompanyController {
 		this.validatorCompany = validatorCompany;
 	}
 
-	@GetMapping
-	@ResponseStatus(HttpStatus.OK)
-	public List<CompanyDTO> findAllComputers() {
-		return companyService.showAll().stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
-	}
+//	@GetMapping
+//	@ResponseStatus(HttpStatus.OK)
+//	public List<CompanyDTO> findAllComputers() {
+//		return companyService.showAll().stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
+//	}
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
@@ -65,13 +65,19 @@ public class CompanyController {
 		Page page = new Page();
 		page.setLimit(limit);
 		page.setOffset(offset);
-		if (!search.isEmpty()) {
+		if (order == null) {
+			order = "";
+		}
+		if (type == null) {
+			type = "";
+		}
+		if (search != null && !search.isEmpty()) {
 			return companyService
-					.getCompaniesOrderByLike(OrderByCompany.valueOf(order), OrderByMode.valueOf(type), search, page)
+					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), search, page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		} else {
 			return companyService
-					.getCompaniesOrderBy(OrderByCompany.valueOf(order), OrderByMode.valueOf(type), page)
+					.getCompaniesOrderBy(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		}
 	}
