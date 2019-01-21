@@ -83,9 +83,9 @@ public class ComputerController {
 			nbOfComputerCreated = computerService.createComputer(computer);
 		} catch (NotPermittedComputerException e) {
 			LOGGER.info("COMPUTER NOT CREATED "+e.getErrorMsg());
-			return new ResponseEntity<String>("COMPUTER NOT CREATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("{\"error\": \"COMPUTER NOT CREATED "+e.getErrorMsg()+"\"}", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(nbOfComputerCreated+" Computer created", HttpStatus.CREATED);
+		return new ResponseEntity<String>("{\"error\": \" "+nbOfComputerCreated+" Computer created \"}", HttpStatus.CREATED);
 	}
 	
 	@PutMapping(value="/update/{id}")
@@ -98,8 +98,8 @@ public class ComputerController {
 			computerService.updateComputer(computer);
 		} catch (NotPermittedComputerException e) {
 			LOGGER.info("COMPUTER NOT UPDATED "+e.getErrorMsg());
-			return new ResponseEntity<String>("COMPUTER NOT UPDATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("{\"error\": \"COMPUTER NOT UPDATED "+e.getErrorMsg()+"\"}", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(nbOfComputerUpdated+" Computer updated", HttpStatus.ACCEPTED);
+		return new ResponseEntity<String>("{\"error\": \" "+nbOfComputerUpdated+" Computer updated \"}", HttpStatus.ACCEPTED);
 	}
 }

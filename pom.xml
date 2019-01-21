@@ -46,6 +46,8 @@
 		<jboss.logging>3.3.2.Final</jboss.logging>
 		<jersey.client>2.25.1</jersey.client>
 		<jersey.media.json.jackson>2.25.1</jersey.media.json.jackson>
+		<jjwt>0.9.1</jjwt>
+		<jackson.annotations>2.9.8</jackson.annotations>
 	</properties>
 
 	<dependencyManagement>
@@ -177,7 +179,12 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
-				<version>2.9.8</version>
+				<version>${jackson.annotations}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>${jjwt}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

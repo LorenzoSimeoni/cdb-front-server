@@ -8,14 +8,17 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -58,23 +61,21 @@ public class WebAppConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+		.csrf().disable() //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 		.cors().configurationSource(corsConfigurationSource()).and()
-		.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-		.and()
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.authorizeRequests()
+			.antMatchers("/login").permitAll()
 			.antMatchers(HttpMethod.GET,"/").permitAll()
 			.antMatchers(HttpMethod.POST,"/registration").permitAll()
-			.antMatchers(HttpMethod.POST, "/Computer/create", "/Company/create").permitAll() //hasRole("ADMIN")
-			.antMatchers(HttpMethod.PUT, "/Computer/update/**", "/Company/update/**").permitAll() //hasRole("ADMIN")
-			.antMatchers(HttpMethod.DELETE, "/Computer/**", "/Company/**").permitAll() //hasRole("ADMIN")
-			.antMatchers(HttpMethod.GET, "/Company/**").permitAll()  // hasRole("ADMIN")
+			.antMatchers(HttpMethod.POST, "/Computer/create", "/Company/create").hasRole("ADMIN")
+			.antMatchers(HttpMethod.PUT, "/Computer/update/**", "/Company/update/**").hasRole("ADMIN")
+			.antMatchers(HttpMethod.DELETE, "/Computer/**", "/Company/**").hasRole("ADMIN")
+			.antMatchers(HttpMethod.GET, "/Company/**").hasRole("ADMIN")
 		.anyRequest().authenticated()
 		.and()
-		.formLogin()
-		.and()
-		.httpBasic()
-		.and()
-		.logout().permitAll();
+		.addFilter(new JWTAuthentificationFilter(authenticationManager()))
+		.addFilterBefore(new JWTAuthorizationFilter(),UsernamePasswordAuthenticationFilter.class);
 	}
 
 	@Bean

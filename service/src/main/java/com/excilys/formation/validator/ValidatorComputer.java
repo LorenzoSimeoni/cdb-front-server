@@ -37,7 +37,7 @@ public class ValidatorComputer {
 		if(discontinuedNotNullWhileIntroducedIs(computer)) {
 			throw new DateDiscontinuedWithoutIntroduced();
 		}
-		if(discontinuedNotAfterIntroduced(computer)) {
+		if(discontinuedNotBeforeIntroduced(computer)) {
 			throw new DateDiscontinuedIsBeforIntroducedException();
 		}
 	}
@@ -56,9 +56,9 @@ public class ValidatorComputer {
 		return false;
 	}
 	
-	private boolean discontinuedNotAfterIntroduced(Computer computer) {
+	private boolean discontinuedNotBeforeIntroduced(Computer computer) {
 		if(computer.getIntroduced() != null && computer.getDiscontinued() != null) {
-			if (!computer.getDiscontinued().isBefore(computer.getIntroduced())) {
+			if (computer.getDiscontinued().isBefore(computer.getIntroduced())) {
 				return true;
 			}
 		}

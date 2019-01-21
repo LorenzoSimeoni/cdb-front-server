@@ -16,63 +16,87 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.excilys.formation.dao.OrderByCompany;
+import com.excilys.formation.dao.OrderByMode;
 import com.excilys.formation.dto.CompanyDTO;
 import com.excilys.formation.exception.IdCompanyException;
 import com.excilys.formation.exception.NotPermittedCompanyException;
 import com.excilys.formation.exception.WebExceptions;
 import com.excilys.formation.mapper.MapperCompany;
 import com.excilys.formation.model.Company;
+import com.excilys.formation.model.Page;
 import com.excilys.formation.service.CompanyService;
 import com.excilys.formation.validator.ValidatorCompany;
 
 @RestController
-@RequestMapping(value="/Company")
+@RequestMapping(value = "/Company")
 public class CompanyController {
-	
+
 	private final static Logger LOGGER = LogManager.getLogger(CompanyController.class.getName());
 
 	private CompanyService companyService;
 	private MapperCompany mapperCompany;
 	private ValidatorCompany validatorCompany;
-	
+
 	@Autowired
-	public CompanyController(CompanyService companyService, MapperCompany mapperCompany, ValidatorCompany validatorCompany) {
+	public CompanyController(CompanyService companyService, MapperCompany mapperCompany,
+			ValidatorCompany validatorCompany) {
 		this.companyService = companyService;
 		this.mapperCompany = mapperCompany;
 		this.validatorCompany = validatorCompany;
 	}
-	
+
+
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<CompanyDTO> findAllComputers() {
-		return companyService.showAll().stream()
-			.map(company -> new CompanyDTO(company))
-			.collect(Collectors.toList());
+	public List<CompanyDTO> findAllCompanies(@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") int limit,
+			@RequestParam(value = "offset") int offset) {
+		Page page = new Page();
+		page.setLimit(limit);
+		page.setOffset(offset);
+		if (order == null) {
+			order = "";
+		}
+		if (type == null) {
+			type = "";
+		}
+		if (search != null && !search.isEmpty()) {
+			return companyService
+					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), search, page)
+					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
+		} else {
+			return companyService
+					.getCompaniesOrderBy(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), page)
+					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
+		}
 	}
-	
-	@GetMapping(value= "/{id}")
+
+	@GetMapping(value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public CompanyDTO findOneCompany(@PathVariable("id") Long id) throws WebExceptions {
 		Optional<Company> companyOpt = companyService.showDetailsById(id);
-		if(companyOpt.isPresent()) {
-			return new CompanyDTO(companyOpt.get());  
+		if (companyOpt.isPresent()) {
+			return new CompanyDTO(companyOpt.get());
 		}
 		throw new IdCompanyException();
 	}
-	
-	@DeleteMapping(value="/{id}")
+
+	@DeleteMapping(value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public int delete(@PathVariable("id") long id) throws WebExceptions {
 		int nbOfCompanyDeleted = companyService.delete(id);
-		if(nbOfCompanyDeleted>0) {
+		if (nbOfCompanyDeleted > 0) {
 			return nbOfCompanyDeleted;
 		}
 		throw new IdCompanyException();
 	}
-	
+
 	@PostMapping("/create")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<String> create(@RequestBody CompanyDTO companyDTO) {
@@ -82,15 +106,17 @@ public class CompanyController {
 			validatorCompany.checkCompany(company);
 			nbOfCompanyCreated = companyService.create(company);
 		} catch (NotPermittedCompanyException e) {
-			LOGGER.info("COMPANY NOT CREATED "+e.getErrorMsg());
-			return new ResponseEntity<String>("COMPANY NOT CREATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
+			LOGGER.info("COMPANY NOT CREATED " + e.getErrorMsg());
+			return new ResponseEntity<String>("{\"error\": \"COMPANY NOT CREATED " + e.getErrorMsg() + "\"}",
+					HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(nbOfCompanyCreated+" Company created", HttpStatus.CREATED);
+		return new ResponseEntity<String>("{\"error\": \" " + nbOfCompanyCreated + " Company created \"}",
+				HttpStatus.CREATED);
 	}
-	
-	@PutMapping(value="/update/{id}")
+
+	@PutMapping(value = "/update/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<String> update(@PathVariable long id,@RequestBody CompanyDTO companyDTO) {
+	public ResponseEntity<String> update(@PathVariable long id, @RequestBody CompanyDTO companyDTO) {
 		companyDTO.setId(id);
 		long nbOfCompanyUpdated = 0;
 		Company company = mapperCompany.mapper(companyDTO);
@@ -98,9 +124,11 @@ public class CompanyController {
 			validatorCompany.checkCompany(company);
 			nbOfCompanyUpdated = companyService.update(company);
 		} catch (NotPermittedCompanyException e) {
-			LOGGER.info("COMPUTER NOT UPDATED "+e.getErrorMsg());
-			return new ResponseEntity<String>("COMPANY NOT UPDATED "+e.getErrorMsg(), HttpStatus.BAD_REQUEST);
+			LOGGER.info("COMPUTER NOT UPDATED " + e.getErrorMsg());
+			return new ResponseEntity<String>("{\"error\": \"COMPANY NOT UPDATED " + e.getErrorMsg() + "\"}",
+					HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(nbOfCompanyUpdated+" Company updated", HttpStatus.CREATED);
+		return new ResponseEntity<String>("{\"error\": \" " + nbOfCompanyUpdated + " Company updated \"}",
+				HttpStatus.CREATED);
 	}
 }

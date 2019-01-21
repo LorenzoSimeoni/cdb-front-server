@@ -49,14 +49,14 @@ public class ValidatorUser {
 	}
 	
 	private boolean userAlreadyExist(User user) {
-		if(userService.findUserByUsername(user.getName()).isPresent()) {
+		if(userService.findUserByUsername(user.getUsername()).isPresent()) {
 			return true;
 		}
 		return false;
 	}
 	
 	private boolean nameIsNull(User user) {
-		if (user.getName() == null) {
+		if (user.getUsername() == null) {
 			return true;			
 		}
 		return false;
