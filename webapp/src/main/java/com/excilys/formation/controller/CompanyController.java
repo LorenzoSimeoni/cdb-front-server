@@ -60,24 +60,18 @@ public class CompanyController {
 	@ResponseStatus(HttpStatus.OK)
 	public List<CompanyDTO> findAllCompanies(@RequestParam(value = "order", required = false) String order,
 			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") int limit,
-			@RequestParam(value = "offset") int offset) {
+			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") String limit,
+			@RequestParam(value = "offset") String offset) {
 		Page page = new Page();
-		page.setLimit(limit);
-		page.setOffset(offset);
-		if (order == null) {
-			order = "";
-		}
-		if (type == null) {
-			type = "";
-		}
-		if (search != null && !search.isEmpty()) {
+		page.setLimit(Integer.parseInt(limit));
+		page.setOffset(Integer.parseInt(offset));
+		if (!"null".equals(search) && !search.isEmpty()) {
 			return companyService
-					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), search, page)
+					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), search, page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		} else {
 			return companyService
-					.getCompaniesOrderBy(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), page)
+					.getCompaniesOrderBy(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		}
 	}

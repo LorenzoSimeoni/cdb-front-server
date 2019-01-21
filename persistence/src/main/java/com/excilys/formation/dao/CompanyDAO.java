@@ -31,7 +31,7 @@ public class CompanyDAO {
 	private static final String DELETEACOMPANY = "DELETE FROM Company WHERE id = :id";
 	private static final String DELETECOMPUTERS = "DELETE FROM Computer WHERE company_id = :id";
 	private static final String UPDATECOMPANY = "UPDATE Company SET name = :name WHERE id = :id";
-	private static final String SEARCHCOMPANY = "FROM Company company WHERE Company.name LIKE :nameCompany ORDER BY ";
+	private static final String SEARCHCOMPANY = "FROM Company company WHERE company.name LIKE :nameCompany ORDER BY ";
 	private static final String SHOWCOMPANIES = "FROM Company company ORDER BY ";
 
     
