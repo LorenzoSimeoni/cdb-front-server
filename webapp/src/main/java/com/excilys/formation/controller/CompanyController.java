@@ -50,11 +50,6 @@ public class CompanyController {
 		this.validatorCompany = validatorCompany;
 	}
 
-//	@GetMapping
-//	@ResponseStatus(HttpStatus.OK)
-//	public List<CompanyDTO> findAllComputers() {
-//		return companyService.showAll().stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
-//	}
 
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)

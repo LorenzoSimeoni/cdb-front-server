@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JWTAuthentificationFilter extends UsernamePasswordAuthenticationFilter {
+	private final static Logger LOGGER = LogManager.getLogger(JWTAuthentificationFilter.class.getName());
 	
 	private AuthenticationManager authenticationManager;
 	
@@ -38,18 +41,12 @@ public class JWTAuthentificationFilter extends UsernamePasswordAuthenticationFil
 		try {
 			user = new ObjectMapper().readValue(request.getInputStream(), User.class);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.info("Request not being parsed correctly",e);
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.info("Request not being mapped correctly",e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.info("Can't access to the request",e);
 		}
-		System.out.println("**************");
-		System.out.println("username: "+user.getUsername());
-		System.out.println("Password:"+user.getPassword());
 		return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 	}
 	
