@@ -63,8 +63,17 @@ public class CompanyController {
 			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") String limit,
 			@RequestParam(value = "offset") String offset) {
 		Page page = new Page();
-		page.setLimit(Integer.parseInt(limit));
-		page.setOffset(Integer.parseInt(offset));
+		if (!"null".equals(limit)) {
+			page.setLimit(Integer.parseInt(limit));
+		} else {
+			page.setLimit(0);
+		}
+
+		if (!"null".equals(offset)) {
+			page.setOffset(Integer.parseInt(offset));
+		} else {
+			page.setOffset(10);
+		}
 		if (!"null".equals(search) && !search.isEmpty()) {
 			return companyService
 					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), search, page)
