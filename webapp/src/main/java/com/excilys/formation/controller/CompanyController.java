@@ -50,12 +50,6 @@ public class CompanyController {
 		this.validatorCompany = validatorCompany;
 	}
 
-//	@GetMapping
-//	@ResponseStatus(HttpStatus.OK)
-//	public List<CompanyDTO> findAllComputers() {
-//		return companyService.showAll().stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
-//	}
-
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<CompanyDTO> findAllCompanies(@RequestParam(value = "order", required = false) String order,
@@ -63,13 +57,12 @@ public class CompanyController {
 			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") String limit,
 			@RequestParam(value = "offset") String offset) {
 		Page page = new Page();
-		if (!"null".equals(limit)) {
+		if (!"null".equals(limit) || limit.isEmpty()) {
 			page.setLimit(Integer.parseInt(limit));
 		} else {
 			page.setLimit(0);
 		}
-
-		if (!"null".equals(offset)) {
+		if (!"null".equals(offset) || offset.isEmpty()) {
 			page.setOffset(Integer.parseInt(offset));
 		} else {
 			page.setOffset(10);
@@ -103,6 +96,12 @@ public class CompanyController {
 			return nbOfCompanyDeleted;
 		}
 		throw new IdCompanyException();
+	}
+
+	@GetMapping("/count")
+	@ResponseStatus(HttpStatus.OK)
+	public long getCompanyNumber() {
+		return companyService.getCompanyCount();
 	}
 
 	@PostMapping("/create")

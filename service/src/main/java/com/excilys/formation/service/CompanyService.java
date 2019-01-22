@@ -48,6 +48,10 @@ public class CompanyService {
 		return companyDao.getCompanyOrderBy(column, mode, page);
 	}
 	
+	public long getCompanyCount() {
+		return companyDao.getCountCompany();
+	}
+	
 	public int delete(long id) {
 		return companyDao.delete(id);
 	}

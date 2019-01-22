@@ -33,6 +33,7 @@ public class CompanyDAO {
 	private static final String UPDATECOMPANY = "UPDATE Company SET name = :name WHERE id = :id";
 	private static final String SEARCHCOMPANY = "FROM Company company WHERE company.name LIKE :nameCompany ORDER BY ";
 	private static final String SHOWCOMPANIES = "FROM Company company ORDER BY ";
+	private static final String COUNTCOMPANY = "SELECT COUNT(company) FROM Company company";
 
     
 	private SessionFactory sessionFactory;
@@ -56,6 +57,15 @@ public class CompanyDAO {
         		.getResultList();
         session.close();
 		return list;
+	}
+	
+	public long getCountCompany() {
+		long count = 0;
+		Session session = sessionFactory.openSession();
+		count = session.createQuery(COUNTCOMPANY,Long.class)
+				.getSingleResult();
+		session.close();
+		return count;
 	}
 	
 	public Optional<Company> getDetailsById(long id) {
