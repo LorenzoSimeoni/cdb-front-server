@@ -50,29 +50,30 @@ public class CompanyController {
 		this.validatorCompany = validatorCompany;
 	}
 
-
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	public List<CompanyDTO> findAllCompanies(@RequestParam(value = "order", required = false) String order,
 			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") int limit,
-			@RequestParam(value = "offset") int offset) {
+			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") String limit,
+			@RequestParam(value = "offset") String offset) {
 		Page page = new Page();
-		page.setLimit(limit);
-		page.setOffset(offset);
-		if (order == null) {
-			order = "";
+		if (!"null".equals(limit) || limit.isEmpty()) {
+			page.setLimit(Integer.parseInt(limit));
+		} else {
+			page.setLimit(0);
 		}
-		if (type == null) {
-			type = "";
+		if (!"null".equals(offset) || offset.isEmpty()) {
+			page.setOffset(Integer.parseInt(offset));
+		} else {
+			page.setOffset(10);
 		}
-		if (search != null && !search.isEmpty()) {
+		if (!"null".equals(search) && !search.isEmpty()) {
 			return companyService
-					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), search, page)
+					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), search, page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		} else {
 			return companyService
-					.getCompaniesOrderBy(OrderByCompany.myValueOf(order), OrderByMode.myValueOf(type), page)
+					.getCompaniesOrderBy(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		}
 	}
@@ -95,6 +96,12 @@ public class CompanyController {
 			return nbOfCompanyDeleted;
 		}
 		throw new IdCompanyException();
+	}
+
+	@GetMapping("/count")
+	@ResponseStatus(HttpStatus.OK)
+	public long getCompanyNumber() {
+		return companyService.getCompanyCount();
 	}
 
 	@PostMapping("/create")
