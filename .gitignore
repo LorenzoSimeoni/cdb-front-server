@@ -99,6 +99,7 @@ hs_err_pid*
 /build/
 /persistence/src/main/resources/hikari.properties
 /webapp/WebContent/META-INF/
+/webapp/src/main/java/com/excilys/formation/config/SecurityConstant.java
 
 ### Maven ###
 target/
