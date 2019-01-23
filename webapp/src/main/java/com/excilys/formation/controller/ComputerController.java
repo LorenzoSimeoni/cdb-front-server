@@ -14,17 +14,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.excilys.formation.dao.OrderByComputer;
+import com.excilys.formation.dao.OrderByMode;
 import com.excilys.formation.dto.ComputerDTO;
 import com.excilys.formation.exception.IdComputerException;
 import com.excilys.formation.exception.NotPermittedComputerException;
 import com.excilys.formation.exception.WebExceptions;
 import com.excilys.formation.mapper.MapperComputer;
 import com.excilys.formation.model.Computer;
+import com.excilys.formation.model.Page;
 import com.excilys.formation.service.ComputerService;
 import com.excilys.formation.validator.ValidatorComputer;
 
@@ -44,13 +48,33 @@ public class ComputerController {
 		this.mapperComputer = mapperComputer;
 		this.validatorComputer = validatorComputer;
 	}
-	
+
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<ComputerDTO> findAllComputers() {
-		return computerService.showAll().stream()
-				.map(computer -> new ComputerDTO(computer))
-				.collect(Collectors.toList());
+	public List<ComputerDTO> findAllCompanies(@RequestParam(value = "order", required = false) String order,
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") String limit,
+			@RequestParam(value = "offset") String offset) {
+		Page page = new Page();
+		if (!"null".equals(limit) || limit.isEmpty()) {
+			page.setLimit(Integer.parseInt(limit));
+		} else {
+			page.setLimit(0);
+		}
+		if (!"null".equals(offset) || offset.isEmpty()) {
+			page.setOffset(Integer.parseInt(offset));
+		} else {
+			page.setOffset(10);
+		}
+		if (!"null".equals(search) && !search.isEmpty()) {
+			return computerService
+					.getComputerOrderByLike(OrderByComputer.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), search, page)
+					.stream().map(computer -> new ComputerDTO(computer)).collect(Collectors.toList());
+		} else {
+			return computerService
+					.getListOrderBy(OrderByComputer.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), page)
+					.stream().map(computer -> new ComputerDTO(computer)).collect(Collectors.toList());
+		}
 	}
 	
 	@GetMapping(value= "/{id}")
@@ -61,6 +85,18 @@ public class ComputerController {
 			return new ComputerDTO(computerOpt.get());
 		}
 		throw new IdComputerException();
+	}
+
+	@GetMapping("/count")
+	@ResponseStatus(HttpStatus.OK)
+	public long getComputerNumber() {
+		return computerService.countComputer();
+	}
+
+	@GetMapping("/searchCount")
+	@ResponseStatus(HttpStatus.OK)
+	public long getCompanyNumberLike(@RequestParam(value = "search", required = false) String search) {
+		return computerService.countComputerLike(search);
 	}
 	
 	@DeleteMapping(value="/{id}")
