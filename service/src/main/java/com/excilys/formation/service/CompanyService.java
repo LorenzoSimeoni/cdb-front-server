@@ -52,6 +52,10 @@ public class CompanyService {
 		return companyDao.getCountCompany();
 	}
 	
+	public long getCompanyCountLike(String name) {
+		return companyDao.countCompanyLike(name);
+	}
+	
 	public int delete(long id) {
 		return companyDao.delete(id);
 	}
