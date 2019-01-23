@@ -58,13 +58,9 @@ public class ComputerController {
 		Page page = new Page();
 		if (!"null".equals(limit) || limit.isEmpty()) {
 			page.setLimit(Integer.parseInt(limit));
-		} else {
-			page.setLimit(0);
 		}
 		if (!"null".equals(offset) || offset.isEmpty()) {
 			page.setOffset(Integer.parseInt(offset));
-		} else {
-			page.setOffset(10);
 		}
 		if (!"null".equals(search) && !search.isEmpty()) {
 			return computerService
@@ -95,7 +91,7 @@ public class ComputerController {
 
 	@GetMapping("/searchCount")
 	@ResponseStatus(HttpStatus.OK)
-	public long getCompanyNumberLike(@RequestParam(value = "search", required = false) String search) {
+	public long getCompanyNumberLike(@RequestParam(value = "search") String search) {
 		return computerService.countComputerLike(search);
 	}
 	
