@@ -12,7 +12,7 @@ public class MapperUser {
 	public User mapper(UserDTO userDTO) {
 		User user = new User();
 		Role role = new Role();
-		user.setName(userDTO.getName());
+		user.setUsername(userDTO.getUsername());
 		user.setPassword(userDTO.getPassword());
 		if(Controller.testStringIsALong(userDTO.getRoleId())) {			
 			role.setId(Long.parseLong(userDTO.getRoleId()));

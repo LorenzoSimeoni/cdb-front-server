@@ -31,6 +31,10 @@ public class CompanyDAO {
 	private static final String DELETEACOMPANY = "DELETE FROM Company WHERE id = :id";
 	private static final String DELETECOMPUTERS = "DELETE FROM Computer WHERE company_id = :id";
 	private static final String UPDATECOMPANY = "UPDATE Company SET name = :name WHERE id = :id";
+	private static final String SEARCHCOMPANY = "FROM Company company WHERE company.name LIKE :nameCompany ORDER BY ";
+	private static final String SHOWCOMPANIES = "FROM Company company ORDER BY ";
+	private static final String COUNTCOMPANY = "SELECT COUNT(company) FROM Company company";
+	private static final String COUNTSEARCHCOMPANY = "SELECT COUNT(company) FROM Company company WHERE company.name LIKE :nameCompany";
 
     
 	private SessionFactory sessionFactory;
@@ -54,6 +58,25 @@ public class CompanyDAO {
         		.getResultList();
         session.close();
 		return list;
+	}
+	
+	public long getCountCompany() {
+		long count = 0;
+		Session session = sessionFactory.openSession();
+		count = session.createQuery(COUNTCOMPANY,Long.class)
+				.getSingleResult();
+		session.close();
+		return count;
+	}
+
+	public long countCompanyLike(String name) {
+		long count = 0;
+		Session session = sessionFactory.openSession();
+		count = session.createQuery(COUNTSEARCHCOMPANY,Long.class)
+				.setParameter("nameCompany", '%' + name + '%')
+				.getSingleResult();
+		session.close();
+		return count;
 	}
 	
 	public Optional<Company> getDetailsById(long id) {
@@ -86,6 +109,29 @@ public class CompanyDAO {
 	public List<Company> getListPage(Page page) {
 		Session session = sessionFactory.openSession();
 		List<Company> list = session.createQuery(LISTCOMPANY,Company.class)
+				.setFirstResult(page.getLimit())
+				.setMaxResults(page.getOffset())
+				.getResultList();
+		session.close();
+		return list;
+	}
+	
+	public List<Company> getCompanyOrderByLike(OrderByCompany column, OrderByMode mode, String name, Page page) {
+		String order = SEARCHCOMPANY + column + " " + mode;
+		Session session = sessionFactory.openSession();
+		List<Company> list = session.createQuery(order,Company.class)
+				.setParameter("nameCompany", '%' + name + '%')
+				.setFirstResult(page.getLimit())
+				.setMaxResults(page.getOffset())
+				.getResultList();
+		session.close();
+		return list;
+	}
+	
+	public List<Company> getCompanyOrderBy(OrderByCompany column, OrderByMode mode, Page page) {
+		String order = SHOWCOMPANIES + column + " " + mode;
+		Session session = sessionFactory.openSession();
+		List<Company> list = session.createQuery(order,Company.class)
 				.setFirstResult(page.getLimit())
 				.setMaxResults(page.getOffset())
 				.getResultList();
