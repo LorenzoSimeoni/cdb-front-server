@@ -104,6 +104,12 @@ public class CompanyController {
 		return companyService.getCompanyCount();
 	}
 
+	@GetMapping("/searchCount")
+	@ResponseStatus(HttpStatus.OK)
+	public long getCompanyNumberLike(@RequestParam(value = "search") String search) {
+		return companyService.getCompanyCountLike(search);
+	}
+
 	@PostMapping("/create")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<String> create(@RequestBody CompanyDTO companyDTO) {
