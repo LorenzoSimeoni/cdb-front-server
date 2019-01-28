@@ -91,8 +91,14 @@ public class ComputerController {
 
 	@GetMapping("/searchCount")
 	@ResponseStatus(HttpStatus.OK)
-	public long getCompanyNumberLike(@RequestParam(value = "search") String search) {
+	public long getComputerNumberLike(@RequestParam(value = "search") String search) {
 		return computerService.countComputerLike(search);
+	}
+
+	@GetMapping("/countFromCompany")
+	@ResponseStatus(HttpStatus.OK)
+	public long getComputerNumberFromCompanyId(@RequestParam(value = "id") long id) {
+		return computerService.countComputerFromCompanyId(id);
 	}
 	
 	@DeleteMapping(value="/{id}")

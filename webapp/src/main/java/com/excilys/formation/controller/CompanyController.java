@@ -50,12 +50,18 @@ public class CompanyController {
 		this.validatorCompany = validatorCompany;
 	}
 
+	@GetMapping("/allCompanies")
+	@ResponseStatus(HttpStatus.OK)
+	public List<CompanyDTO> findAllCompanies() {
+		return companyService.showAll().stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
+	}
+
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
-	public List<CompanyDTO> findAllCompanies(@RequestParam(value = "order", required = false) String order,
+	public List<CompanyDTO> findCompaniesWithRestrictions(@RequestParam(value = "order", required = false) String order,
 			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "search", required = false) String search, @RequestParam(value = "limit") String limit,
-			@RequestParam(value = "offset") String offset) {
+			@RequestParam(value = "search", required = false) String search,
+			@RequestParam(value = "limit") String limit, @RequestParam(value = "offset") String offset) {
 		Page page = new Page();
 		if (!"null".equals(limit) || limit.isEmpty()) {
 			page.setLimit(Integer.parseInt(limit));
@@ -69,11 +75,13 @@ public class CompanyController {
 		}
 		if (!"null".equals(search) && !search.isEmpty()) {
 			return companyService
-					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), search, page)
+					.getCompaniesOrderByLike(OrderByCompany.myValueOf(order.toLowerCase()),
+							OrderByMode.myValueOf(type.toLowerCase()), search, page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		} else {
 			return companyService
-					.getCompaniesOrderBy(OrderByCompany.myValueOf(order.toLowerCase()), OrderByMode.myValueOf(type.toLowerCase()), page)
+					.getCompaniesOrderBy(OrderByCompany.myValueOf(order.toLowerCase()),
+							OrderByMode.myValueOf(type.toLowerCase()), page)
 					.stream().map(company -> new CompanyDTO(company)).collect(Collectors.toList());
 		}
 	}
