@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +39,7 @@ public class RegistrationController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public long registration(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<String> registration(@RequestBody UserDTO userDTO) {
 		User user = mapperUser.mapper(userDTO);
 		System.out.println(user.toString());
 		long nbOfUserCreated = 0;
@@ -49,7 +50,8 @@ public class RegistrationController {
 			nbOfUserCreated = userService.create(user);
 		} catch (NotPermittedUserException e) {
 			LOGGER.info(" USER NOT CREATED "+e.getErrorMsg());
+			return new ResponseEntity<String>("{\"error\": \"USER NOT CREATED "+e.getErrorMsg()+"\"}", HttpStatus.BAD_REQUEST);
 		}
-		return nbOfUserCreated;
+		return new ResponseEntity<String>("{\"error\": \" "+nbOfUserCreated+" USER CREATED \"}", HttpStatus.CREATED);
 	}
 }
