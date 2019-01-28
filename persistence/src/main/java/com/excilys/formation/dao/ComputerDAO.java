@@ -33,7 +33,8 @@ public class ComputerDAO {
 	private static final String COUNTSEARCHCOMPUTER = "SELECT COUNT(computer) FROM Computer computer WHERE computer.name LIKE :nameComputer OR computer.company.name LIKE :nameCompany";
 	private static final String DELETEACOMPUTER = "DELETE FROM Computer WHERE id = :id";
 	private static final String UPDATEACOMPUTER = "UPDATE Computer SET name = :name, introduced = :introduced, discontinued = :discontinued, company_id = :companyId WHERE id = :id";
-
+	private static final String COUNTCOMPUTERFROMCOMPANY = "SELECT COUNT(computer) FROM Computer computer WHERE computer.company.id = :companyId";
+	
 	private SessionFactory sessionFactory;
 	
 	@Autowired
@@ -118,6 +119,16 @@ public class ComputerDAO {
 		count = session.createQuery(COUNTSEARCHCOMPUTER,Long.class)
 				.setParameter("nameComputer", '%' + name + '%')
 				.setParameter("nameCompany", '%' + name + '%')
+				.getSingleResult();
+		session.close();
+		return count;
+	}
+
+	public long countComputerFromCompanyId(long id) {
+		long count = 0;
+		Session session = sessionFactory.openSession();
+		count = session.createQuery(COUNTCOMPUTERFROMCOMPANY,Long.class)
+				.setParameter("companyId", id)
 				.getSingleResult();
 		session.close();
 		return count;

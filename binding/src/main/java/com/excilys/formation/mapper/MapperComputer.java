@@ -124,12 +124,12 @@ public class MapperComputer {
 		if(computerDTO.getIntroduced() == null || computerDTO.getIntroduced().isEmpty()) {
 			computerDTO.setIntroduced(null);
 		} else {
-			computerDTO.setIntroduced(computerDTO.getIntroduced()+"T00:00:00");
+			computerDTO.setIntroduced(computerDTO.getIntroduced().substring(0, 20));
 		}
 		if(computerDTO.getDiscontinued() == null || computerDTO.getDiscontinued().isEmpty()) {
 			computerDTO.setDiscontinued(null);
 		} else {
-			computerDTO.setDiscontinued(computerDTO.getDiscontinued()+"T00:00:00");
+			computerDTO.setDiscontinued(computerDTO.getDiscontinued().substring(0, 20));
 		}
 		if(computerDTO.getCompanyId() == null || computerDTO.getCompanyId().isEmpty()) {
 			computerDTO.setCompanyId(null);
