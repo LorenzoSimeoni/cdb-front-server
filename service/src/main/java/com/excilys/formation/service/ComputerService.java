@@ -65,4 +65,8 @@ public class ComputerService {
 	public long countComputerLike(String name) {
 		return computerDao.countComputerLike(name);
 	}
+	
+	public long countComputerFromCompanyId(long id) {
+		return computerDao.countComputerFromCompanyId(id);
+	}
 }
