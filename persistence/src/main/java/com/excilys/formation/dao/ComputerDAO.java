@@ -27,7 +27,7 @@ public class ComputerDAO {
 	private static final String LISTCOMPUTER = "FROM Computer";
 	private static final String SHOWCOMPUTERDETAILS = "FROM Computer WHERE name = :name";
 	private static final String SHOWCOMPUTERDETAILSBYID = "FROM Computer WHERE id = :id";
-	private static final String SEARCHCOMPUTERANDCOMPANY = "FROM Computer computer WHERE computer.name LIKE :nameComputer OR computer.company.name LIKE :nameCompany ORDER BY ";
+	private static final String SEARCHCOMPUTERANDCOMPANY = "select cpu from Computer as cpu left join Company as cpa with cpu.company = cpa.id where cpu.name like :nameComputer or cpa.name like :nameCompany order by ";
 	private static final String SHOWORDERBY = "FROM Computer ORDER BY ";
 	private static final String COUNTCOMPUTER = "SELECT COUNT(computer) FROM Computer computer";
 	private static final String COUNTSEARCHCOMPUTER = "SELECT COUNT(computer) FROM Computer computer WHERE computer.name LIKE :nameComputer OR computer.company.name LIKE :nameCompany";
@@ -92,7 +92,7 @@ public class ComputerDAO {
 	}
 
 	public List<Computer> getComputerOrderByLike(OrderByComputer column, OrderByMode mode, String name, Page page) {
-		String order = SEARCHCOMPUTERANDCOMPANY + column + " " + mode;
+		String order = SEARCHCOMPUTERANDCOMPANY + "cpu."+column + " " + mode;
 		Session session = sessionFactory.openSession();
 		List<Computer> list = session.createQuery(order, Computer.class)
 				.setParameter("nameComputer", '%' + name + '%')
