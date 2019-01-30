@@ -8,6 +8,6 @@ public class NameUserException extends NotPermittedUserException{
 		return ErrorMsg;
 	}
 	public NameUserException() {
-		ErrorMsg = "You gived a user with no name, can't achieve the creation";
+		ErrorMsg = "You gave a user with no name, can't achieve the creation";
 	}
 }

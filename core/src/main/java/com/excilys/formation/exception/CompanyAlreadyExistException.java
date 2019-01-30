@@ -10,6 +10,6 @@ public class CompanyAlreadyExistException extends NotPermittedCompanyException{
 	}
 	
 	public CompanyAlreadyExistException() {
-		ErrorMsg="You gived a Company name which already exist";
+		ErrorMsg="You gave a Company name which already exist";
 	}
 }

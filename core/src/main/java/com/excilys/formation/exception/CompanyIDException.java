@@ -11,6 +11,6 @@ public class CompanyIDException extends NotPermittedComputerException {
 	}
 	
 	public CompanyIDException() {
-		ErrorMsg="You gived a wrong Company ID, can't achieve the creation or update of computer";
+		ErrorMsg="You gave a wrong Company ID, can't achieve the creation or update of computer";
 	}
 }
