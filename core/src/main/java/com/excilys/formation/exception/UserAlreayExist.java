@@ -10,6 +10,6 @@ public class UserAlreayExist extends NotPermittedUserException{
 	}
 	
 	public UserAlreayExist() {
-		ErrorMsg="You gived an user name which already exist";
+		ErrorMsg="You gave an user name which already exist";
 	}
 }

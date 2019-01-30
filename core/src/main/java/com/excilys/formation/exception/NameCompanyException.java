@@ -10,6 +10,6 @@ public class NameCompanyException extends NotPermittedCompanyException{
 	}
 	
 	public NameCompanyException() {
-		ErrorMsg="You gived a wrong Company name";
+		ErrorMsg="You gave a wrong Company name";
 	}
 }

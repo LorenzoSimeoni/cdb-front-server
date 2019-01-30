@@ -30,7 +30,7 @@ public class ComputerDAO {
 	private static final String SEARCHCOMPUTERANDCOMPANY = "select cpu from Computer as cpu left join Company as cpa with cpu.company = cpa.id where cpu.name like :nameComputer or cpa.name like :nameCompany order by ";
 	private static final String SHOWORDERBY = "FROM Computer ORDER BY ";
 	private static final String COUNTCOMPUTER = "SELECT COUNT(computer) FROM Computer computer";
-	private static final String COUNTSEARCHCOMPUTER = "SELECT COUNT(computer) FROM Computer computer WHERE computer.name LIKE :nameComputer OR computer.company.name LIKE :nameCompany";
+	private static final String COUNTSEARCHCOMPUTER = "select COUNT(cpu) from Computer as cpu left join Company as cpa with cpu.company = cpa.id where cpu.name like :nameComputer or cpa.name like :nameCompany ";
 	private static final String DELETEACOMPUTER = "DELETE FROM Computer WHERE id = :id";
 	private static final String UPDATEACOMPUTER = "UPDATE Computer SET name = :name, introduced = :introduced, discontinued = :discontinued, company_id = :companyId WHERE id = :id";
 	private static final String COUNTCOMPUTERFROMCOMPANY = "SELECT COUNT(computer) FROM Computer computer WHERE computer.company.id = :companyId";
